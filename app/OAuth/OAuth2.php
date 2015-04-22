@@ -94,7 +94,9 @@ class OAuth2
      */
     private function initializeOAuthRequest()
     {
-        $this->request->initialize($this->request->all());
+        if (strtoupper($this->request->method()) === "GET") {
+            $this->request->initialize($this->request->all());
+        }
 
         return $this->oauthRequest->createFromRequest(
             $this->request->instance()
