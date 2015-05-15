@@ -7,7 +7,12 @@ $app->get(
 
 $app->post(
     'authorize',
-    'App\Http\Controllers\TokenController@authorize'
+    'App\Http\Controllers\AccessToken@authorize'
+);
+
+$app->post(
+    'authorize/webtoken',
+    'App\Http\Controllers\AccessToken@webtoken'
 );
 
 $app->get(

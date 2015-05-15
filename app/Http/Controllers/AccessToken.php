@@ -1,13 +1,14 @@
 <?php namespace App\Http\Controllers;
 
 use App\OAuth\OAuth2;
+use Illuminate\Http\Request;
 
 /**
  * Class TokenController
  *
  * @package App\Http\Controllers
  */
-class TokenController extends Controller
+class AccessToken extends Controller
 {
 
     /**
@@ -28,6 +29,16 @@ class TokenController extends Controller
      */
     public function authorize()
     {
+        $this->oauth->setAuthType('PDO');
+        return $this->oauth->token();
+    }
+
+    /**
+     * @return \OAuth2\Response|\OAuth2\ResponseInterface
+     */
+    public function webtoken()
+    {
+        $this->oauth->setAuthType('JWT');
         return $this->oauth->token();
     }
 }

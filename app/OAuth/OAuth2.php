@@ -13,6 +13,10 @@ use Exception;
  */
 class OAuth2
 {
+    /**
+     * @type
+     */
+    private $authType;
 
     /**
      * @var Server
@@ -47,7 +51,7 @@ class OAuth2
         Request $request
     )
     {
-        $this->server = $server->init();
+        $this->server = $server;
         $this->oauthRequest = $oauthRequest;
         $this->oauthResponse = $oauthResponse;
         $this->request = $request;
@@ -60,7 +64,9 @@ class OAuth2
      */
     public function token()
     {
-        return $this->server->handleTokenRequest(
+        $server = $this->server->init($this->authType);
+
+        return $server->handleTokenRequest(
             $this->initializeOAuthRequest(),
             $this->oauthResponse,
             $this->request->get('authorize')
@@ -76,14 +82,16 @@ class OAuth2
      */
     public function validateToken($token)
     {
+        $server = $this->server->init($this->authType);
+
         if (! $token) {
 
             throw new Exception('Invalid access token');
         }
 
-        if (! $this->server->verifyResourceRequest($this->initializeOAuthRequest(), $this->oauthResponse)) {
+        if (! $server->verifyResourceRequest($this->initializeOAuthRequest(), $this->oauthResponse)) {
 
-            return $this->server->getResponse();
+            return $server->getResponse();
         }
 
         return true;
@@ -101,5 +109,17 @@ class OAuth2
         return $this->oauthRequest->createFromRequest(
             $this->request->instance()
         );
+    }
+
+    /**
+     * @param mixed $authType
+     *
+     * @return $this
+     */
+    public function setAuthType($authType)
+    {
+        $this->authType = $authType;
+
+        return $this;
     }
 }
